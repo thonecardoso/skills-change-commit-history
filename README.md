@@ -16,48 +16,52 @@ Accidental commits can be tricky to remove with Git. In this GitHub Skills cours
 </header>
 
 <!--
-  <<< Author notes: Course start >>>
-  Include start button, a note about Actions minutes,
-  and tell the learner why they should take the course.
+  <<< Author notes: Step 2 >>>
+  Start this step by acknowledging the previous step.
+  Define terms and link to docs.github.com.
 -->
 
-## Welcome
+## Step 2: Removing a file from Git history using BFG Repo-Cleaner
 
-A trustworthy commit history is the backbone of version control with Git. As a result, altering commit history is difficult by design. Sometimes, the history needs to be altered to remove credentials or other sensitive data that is mistakenly checked in. In this course, we'll learn how to remove content from repository's complete history and apply best practices for preventing accidental commits in the future.
+_You removed `.env` from the repository's root directory! :tada:_
 
-- **Who is this for**: Intermediate users of Git, organizations
-- **What you'll learn**: How to remove a file from Git's entire history
-- **What you'll build**: You'll manipulate the history of a Git repository
-- **Prerequisites**: We recommend you clone this repository to your machine and use the command line to follow along. You'll also need to install BFG Repo-Cleaner, but the steps will be covered in the course.
-- **How long**: This course takes less than 1 hour to complete.
+Now that we've deleted the file, people that browse the repository on GitHub.com or anyone looking at just the head commit won't see the file. However, due to Git's nature, the file is still present in the history. In this step, we'll work on removing the file from the repository history.
 
-In this course, you will:
+**What is a _head commit_**? In Git, HEAD points to a branch or a commit. When we say [head commit](https://docs.github.com/en/get-started/quickstart/github-glossary#head), we usually mean the most recent commit in the repository's history.
 
-1. Remove content from the root directory of a repository
-2. Use BFG Repo-Cleaner to remove content from repository history
-3. Avoid future accidental commits by adding a pattern to `.gitignore`
+There are multiple tools available for removing Git history, we'll use BFG Repo-Cleaner in this step. You can find additional documentation on [Using the BFG in GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository#using-the-bfg).
 
-### How to start this course
+**What is _BFG Repo-Cleaner_**? BFG Repo-Cleaner is software that can help you search through and alter repository history. Git can natively do this using [`git filter-repo`](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository#using-git-filter-repo), but it can be more complex.
 
-<!-- For start course, run in JavaScript:
-'https://github.com/new?' + new URLSearchParams({
-  template_owner: 'skills',
-  template_name: 'change-commit-history',
-  owner: '@me',
-  name: 'skills-change-commit-history',
-  description: 'My copy of the skills course on changing commit history',
-  visibility: 'public',
-}).toString()
--->
+### :keyboard: Activity: Use BFG Repo-Cleaner to remove the `.env` file
 
-[![start-course](https://user-images.githubusercontent.com/1221423/235727646-4a590299-ffe5-480d-8cd5-8194ea184546.svg)](https://github.com/new?template_owner=skills&template_name=change-commit-history&owner=%40me&name=skills-change-commit-history&description=My+copy+of+the+skills+course+on+changing+commit+history&visibility=public)
-
-1. Right-click **Start course** and open the link in a new tab.
-2. In the new tab, most of the prompts will automatically fill in for you.
-   - For owner, choose your personal account or an organization to host the repository.
-   - We recommend creating a public repository, as private repositories will [use Actions minutes](https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions).
-   - Scroll down and click the **Create repository** button at the bottom of the form.
-3. After your new repository is created, wait about 20 seconds, then refresh the page. Follow the step-by-step instructions in the new repository's README.
+1. Update the local copy of your repository to ensure you have the most recent version of the course files.
+   ```shell
+   git pull
+   ```
+2. Install BFG Repo-Cleaner on your machine. You can follow the [instructions on the web site](https://rtyley.github.io/bfg-repo-cleaner/) to do so or you can use a package manager for your operating system.
+3. Confirm the `.env` file is removed from the root directory. The command should return empty.
+   ```shell
+   find . -name ".env"
+   ```
+4. Search for .env in the repository's history. The command should return at least 2 commits: the addition of `.env` when you copied this template repository, and the removal of `.env`.
+   ```shell
+   git log --stat --all -- .env
+   ```
+5. Use BFG Repo-Cleaner to delete all references to `.env` that exist in the repository.
+   ```shell
+   bfg --delete-files .env
+   ```
+6. The tool will run and make some suggestions about some follow-up commands. Run those to get your local repository cleaned up.
+7. Repeat the search for `.env` in the repository's history. This time, the command should return empty.
+   ```shell
+   git log --stat --all -- .env
+   ```
+8. Push your changes to GitHub. Note we're using the `--force` argument in this step since we're altering Git history.
+   ```shell
+   git push --force
+   ```
+9. Wait about 20 seconds then refresh this page (the one you're following instructions from). [GitHub Actions](https://docs.github.com/en/actions) will automatically update to the next step.
 
 <footer>
 
